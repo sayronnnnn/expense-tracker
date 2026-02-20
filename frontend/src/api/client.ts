@@ -1,4 +1,5 @@
-const BASE = '/api/v1'
+const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const BASE = `${apiUrl}/api/v1`
 
 const getAccessToken = (): string | null =>
   localStorage.getItem('access_token')
