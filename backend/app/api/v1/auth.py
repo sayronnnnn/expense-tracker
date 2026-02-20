@@ -208,10 +208,12 @@ async def google_auth(body: GoogleAuthBody):
         
         if not user:
             # Create new user with Google OAuth
+            # Google already verifies emails, so mark as verified
             user = User(
                 email=email,
                 name=name,
                 password_hash="",  # No password for OAuth users
+                email_verified=True,  # Google verifies emails
             )
             await user.insert()
         else:
