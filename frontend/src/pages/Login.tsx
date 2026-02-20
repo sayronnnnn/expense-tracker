@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useGoogleLogin } from '@react-oauth/google'
 import { useAuth } from '../contexts/AuthContext'
-import { login } from '../api/auth'
+import { login, googleLogin, getMe } from '../api/auth'
 import styles from './Auth.module.css'
 
 export function Login() {
@@ -20,7 +21,6 @@ export function Login() {
     setLoading(true)
     try {
       await login(email, password)
-      const { getMe } = await import('../api/auth')
       const user = await getMe()
       setUser(user)
       navigate(from, { replace: true })
@@ -30,6 +30,26 @@ export function Login() {
       setLoading(false)
     }
   }
+
+  const googleLoginHandler = useGoogleLogin({
+    onSuccess: async (credentialResponse) => {
+      setError('')
+      setLoading(true)
+      try {
+        await googleLogin(credentialResponse.access_token)
+        const user = await getMe()
+        setUser(user)
+        navigate(from, { replace: true })
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Google login failed')
+      } finally {
+        setLoading(false)
+      }
+    },
+    onError: () => {
+      setError('Google login failed')
+    },
+  })
 
   return (
     <div className={styles.page}>
@@ -61,6 +81,36 @@ export function Login() {
             {loading ? 'Logging in…' : 'Log in'}
           </button>
         </form>
+        <div style={{ margin: '20px 0', textAlign: 'center' }}>
+          <p style={{ marginBottom: '10px', fontSize: '14px', color: 'var(--text-secondary)' }}>Or continue with</p>
+          <button
+            type="button"
+            onClick={() => googleLoginHandler()}
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '10px',
+              border: '1px solid var(--border-color)',
+              borderRadius: '6px',
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '500',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              (e.target as HTMLButtonElement).style.background = 'var(--primary-color)'
+              ;(e.target as HTMLButtonElement).style.color = 'white'
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLButtonElement).style.background = 'var(--bg-secondary)'
+              ;(e.target as HTMLButtonElement).style.color = 'var(--text-primary)'
+            }}
+          >
+            Google
+          </button>
+        </div>
         <p className={styles.footer}>
           Don’t have an account? <Link to="/register">Register</Link>
         </p>

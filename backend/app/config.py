@@ -28,5 +28,8 @@ class Settings(BaseSettings):
     # CORS (comma-separated list, or "*" to allow all origins)
     CORS_ORIGINS: str = "http://localhost:5173"
 
+    # Google OAuth
+    GOOGLE_CLIENT_ID: str | None = None
+
 
 settings = Settings()

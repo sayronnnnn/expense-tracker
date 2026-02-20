@@ -1,5 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr, Field
+import requests
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
 
 from beanie import PydanticObjectId
 
@@ -12,6 +15,7 @@ from app.core.security import (
     decode_token,
 )
 from app.api.deps import get_current_user
+from app.config import settings
 
 router = APIRouter()
 
@@ -96,3 +100,59 @@ class MeResponse(BaseModel):
 @router.get("/me", response_model=MeResponse)
 async def me(current_user: User = Depends(get_current_user)):
     return MeResponse(id=str(current_user.id), email=current_user.email, name=current_user.name)
+
+
+class GoogleAuthBody(BaseModel):
+    token: str
+
+
+@router.post("/google", response_model=TokenResponse)
+async def google_auth(body: GoogleAuthBody):
+    """
+    Google OAuth authentication endpoint.
+    Accepts a Google ID token from the frontend and creates/updates user.
+    """
+    google_client_id = settings.GOOGLE_CLIENT_ID
+    
+    if not google_client_id:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Google OAuth not configured")
+    
+    try:
+        # Verify the Google token
+        idinfo = id_token.verify_oauth2_token(body.token, google_requests.Request(), google_client_id)
+        
+        # Token is valid, extract user info
+        email = idinfo.get("email")
+        name = idinfo.get("name")
+        picture = idinfo.get("picture")
+        
+        if not email:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email not provided by Google")
+        
+        # Find or create user
+        user = await User.find_one(User.email == email)
+        
+        if not user:
+            # Create new user with Google OAuth
+            user = User(
+                email=email,
+                name=name,
+                password_hash="",  # No password for OAuth users
+            )
+            await user.insert()
+        else:
+            # Update user name if provided by Google
+            if name and not user.name:
+                user.name = name
+                await user.save()
+        
+        return TokenResponse(
+            access_token=create_access_token(str(user.id), user.email),
+            refresh_token=create_refresh_token(str(user.id), user.email),
+        )
+    
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Invalid Google token: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Google authentication failed")
+

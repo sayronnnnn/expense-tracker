@@ -13,10 +13,9 @@ export async function login(email: string, password: string): Promise<TokenRespo
   return data
 }
 
-export async function logout(): Promise<void> {
-  clearTokens()
+export async function googleLogin(googleToken: string): Promise<TokenResponse> {
+  const data = await apiPost<TokenResponse>('/auth/google', { token: googleToken })
+  setTokens(data.access_token, data.refresh_token)
+  return data
 }
 
-export async function getMe(): Promise<User> {
-  return apiGet<User>('/auth/me')
-}
