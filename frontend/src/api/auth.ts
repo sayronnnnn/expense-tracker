@@ -19,3 +19,10 @@ export async function googleLogin(googleToken: string): Promise<TokenResponse> {
   return data
 }
 
+export async function logout(): Promise<void> {
+  clearTokens()
+}
+
+export async function getMe(): Promise<User> {
+  return apiGet<User>('/auth/me')
+}
