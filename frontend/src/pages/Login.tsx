@@ -102,7 +102,10 @@ export function Login() {
           />
         </div>
         <p className={styles.footer}>
-          Don't have an account? <Link to="/register">Create one</Link>
+          Don't have an account? <Link to="/register">Create one with Google</Link>
+        </p>
+        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '1rem', padding: '0.5rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px' }}>
+          ℹ️ Email registration is temporarily unavailable. Please use Google login to sign up.
         </p>
       </div>
     </div>

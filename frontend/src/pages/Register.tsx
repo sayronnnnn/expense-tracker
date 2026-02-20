@@ -45,6 +45,10 @@ export function Register() {
           <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '2rem' }}>
             Already have an account? <Link to="/login">Sign in</Link>
           </p>
+
+          <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textAlign: 'center', marginTop: '1rem', padding: '0.5rem', backgroundColor: 'var(--bg-secondary)', borderRadius: '4px' }}>
+            ℹ️ Email registration is temporarily unavailable. We're using Google OAuth for a better experience.
+          </p>
         </div>
       </div>
     </div>
