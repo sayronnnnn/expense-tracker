@@ -26,12 +26,39 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+@media (max-width: 768px) {
+  .card {
+    padding: var(--space-4) var(--space-5);
+  }
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+}
+
 /* Quick stats grid */
 .quickStatsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--space-4);
   margin-bottom: var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .quickStatsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+}
+
+@media (max-width: 640px) {
+  .quickStatsGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
 }
 
 .quickStatCard {

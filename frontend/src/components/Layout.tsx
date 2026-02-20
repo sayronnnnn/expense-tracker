@@ -11,6 +11,8 @@ import {
   Zap,
   Sun,
   Moon,
+  Menu,
+  X,
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { logout } from '../api/auth'
@@ -26,6 +28,7 @@ export function Layout({ children }: LayoutProps) {
   const { user, setUser } = useAuth()
   const navigate = useNavigate()
   const [showProfileMenu, setShowProfileMenu] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const stored = localStorage.getItem('theme')
     return (stored as 'light' | 'dark') || 'light'
@@ -56,11 +59,21 @@ export function Layout({ children }: LayoutProps) {
     navigate('/login')
   }
 
+  // Close sidebar when navigating on mobile
+  const handleNavClick = () => {
+    setSidebarOpen(false)
+  }
+
   return (
     <div className={styles.wrapper}>
-      <aside className={styles.sidebar}>
+      {/* Overlay for mobile sidebar */}
+      {sidebarOpen && (
+        <div className={styles.overlay} onClick={() => setSidebarOpen(false)} />
+      )}
+
+      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.sidebarHeader}>
-          <Link to="/" className={styles.logo}>
+          <Link to="/" className={styles.logo} onClick={handleNavClick}>
             <img src={logo} alt="Expense Tracker" className={styles.logoImg} />
             <span className={styles.logoText}>Expense Tracker</span>
           </Link>
@@ -68,29 +81,29 @@ export function Layout({ children }: LayoutProps) {
 
         <nav className={styles.nav}>
           <div className={styles.sectionLabel}>MAIN MENU</div>
-          <NavLink to="/" end className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
+          <NavLink to="/" end onClick={handleNavClick} className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
             <LayoutDashboard size={20} strokeWidth={2} />
             Dashboard
           </NavLink>
-          <NavLink to="/expenses" className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
+          <NavLink to="/expenses" onClick={handleNavClick} className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
             <Wallet size={20} strokeWidth={2} />
             Expenses
           </NavLink>
-          <NavLink to="/budgets" className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
+          <NavLink to="/budgets" onClick={handleNavClick} className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
             <PiggyBank size={20} strokeWidth={2} />
             Budgets
           </NavLink>
-          <NavLink to="/categories" className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
+          <NavLink to="/categories" onClick={handleNavClick} className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
             <FolderOpen size={20} strokeWidth={2} />
             Categories
           </NavLink>
-          <NavLink to="/recurring" className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
+          <NavLink to="/recurring" onClick={handleNavClick} className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
             <RefreshCw size={20} strokeWidth={2} />
             Recurring
           </NavLink>
 
           <div className={styles.sectionLabel}>OTHER</div>
-          <NavLink to="/analysis" className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
+          <NavLink to="/analysis" onClick={handleNavClick} className={({ isActive }) => `${styles.navLink} ${isActive ? styles.active : ''}`}>
             <Zap size={20} strokeWidth={2} />
             Analysis
           </NavLink>
@@ -123,6 +136,14 @@ export function Layout({ children }: LayoutProps) {
       <div className={styles.main}>
         <header className={styles.topBar}>
           <div className={styles.headerLeft}>
+            <button
+              type="button"
+              className={styles.menuToggle}
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              title="Toggle navigation menu"
+            >
+              {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
             <p className={styles.pageTitle}>Dashboard</p>
           </div>
 
@@ -145,7 +166,7 @@ export function Layout({ children }: LayoutProps) {
               onClick={() => navigate('/expenses')}
             >
               <Plus size={16} strokeWidth={2.5} />
-              Add Expense
+              <span className={styles.addButtonText}>Add Expense</span>
             </button>
           </div>
         </header>
