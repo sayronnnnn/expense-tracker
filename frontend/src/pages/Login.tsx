@@ -8,7 +8,6 @@ import styles from './Auth.module.css'
 
 export function Login() {
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
   const { setUser } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -16,7 +15,6 @@ export function Login() {
 
   const handleGoogleSuccess = async (credentialResponse: any) => {
     setError('')
-    setLoading(true)
     try {
       await googleLogin(credentialResponse.credential)
       const user = await getMe()
@@ -26,8 +24,6 @@ export function Login() {
       const errorMessage = err instanceof Error ? err.message : 'Google login failed'
       console.error('Google login error:', err)
       setError(errorMessage)
-    } finally {
-      setLoading(false)
     }
   }
 
