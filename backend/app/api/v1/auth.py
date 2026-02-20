@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from pydantic import BaseModel, EmailStr, Field
 import secrets
 from google.auth.transport import requests as google_requests
@@ -48,7 +48,7 @@ class RefreshBody(BaseModel):
 
 
 @router.post("/register", response_model=VerificationResponse)
-async def register(body: RegisterBody):
+async def register(body: RegisterBody, background_tasks: BackgroundTasks):
     existing = await User.find_one(User.email == body.email)
     if existing:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
@@ -65,8 +65,8 @@ async def register(body: RegisterBody):
     )
     await user.insert()
     
-    # Send verification email
-    await send_verification_email(body.email, verification_token)
+    # Send verification email in background (non-blocking)
+    background_tasks.add_task(send_verification_email, body.email, verification_token)
     
     return VerificationResponse(
         message="Registration successful! Please check your email to verify your account.",
@@ -99,7 +99,7 @@ async def verify_email(body: VerifyEmailBody):
 
 
 @router.post("/resend-verification", response_model=VerificationResponse)
-async def resend_verification(body: LoginBody):
+async def resend_verification(body: LoginBody, background_tasks: BackgroundTasks):
     """Resend verification email"""
     user = await User.find_one(User.email == body.email)
     
@@ -118,8 +118,8 @@ async def resend_verification(body: LoginBody):
     user.verification_token = verification_token
     await user.save()
     
-    # Send verification email
-    await send_verification_email(user.email, verification_token)
+    # Send verification email in background (non-blocking)
+    background_tasks.add_task(send_verification_email, user.email, verification_token)
     
     return VerificationResponse(
         message="Verification email sent! Please check your email.",

@@ -1,4 +1,5 @@
 import aiosmtplib
+import asyncio
 import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -8,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 async def send_verification_email(email: str, verification_token: str, frontend_url: str = "https://cdexpensetracker.vercel.app") -> bool:
-    """Send verification email with token link"""
+    """Send verification email with token link (with timeout handling)"""
     
     # If SMTP not configured, log and return True (mock mode for development)
     if not settings.SMTP_USER or not settings.SMTP_PASSWORD:
@@ -67,8 +68,8 @@ Expense Tracker Team
         message.attach(MIMEText(text_content, "plain"))
         message.attach(MIMEText(html_content, "html"))
         
-        # Send email
-        async with aiosmtplib.SMTP(hostname=settings.SMTP_HOST, port=settings.SMTP_PORT) as smtp:
+        # Send email with timeout (10 seconds)
+        async with aiosmtplib.SMTP(hostname=settings.SMTP_HOST, port=settings.SMTP_PORT, timeout=10) as smtp:
             await smtp.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
             await smtp.sendmail(
                 settings.SMTP_FROM_EMAIL or settings.SMTP_USER,
@@ -79,6 +80,10 @@ Expense Tracker Team
         logger.info(f"Verification email sent to {email}")
         return True
         
+    except asyncio.TimeoutError:
+        logger.warning(f"SMTP timeout sending email to {email}. Email sending failed but registration succeeded.")
+        return False
     except Exception as e:
         logger.error(f"Failed to send verification email to {email}: {str(e)}")
         return False
+
