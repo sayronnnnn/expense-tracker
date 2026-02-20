@@ -18,10 +18,29 @@
 }
 
 .card h1 {
-  margin: 0 0 1.5rem;
+  margin: 0 0 0.5rem;
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-primary);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 .form {
@@ -74,6 +93,39 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+.submitBtn {
+  composes: button;
+  margin-top: 0.5rem;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.googleContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.googleContainer > div {
+  width: 100%;
+}
+
 
 .error {
   margin: 0;

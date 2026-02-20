@@ -1,5 +1,6 @@
 {
-  "rewrites": [
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/dist",
     {
       "source": "/(.*)",
       "destination": "/index.html"

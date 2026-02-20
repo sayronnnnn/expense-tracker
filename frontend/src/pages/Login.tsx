@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { GoogleLogin } from '@react-oauth/google'
 import { useAuth } from '../contexts/AuthContext'
 import { login, googleLogin, getMe } from '../api/auth'
+import logo from '../assets/logo.png'
 import styles from './Auth.module.css'
 
 export function Login() {
@@ -49,7 +50,11 @@ export function Login() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <h1>Log in</h1>
+        <div className={styles.header}>
+          <img src={logo} alt="Expense Tracker" className={styles.logo} />
+          <h1>Welcome Back</h1>
+          <p className={styles.subtitle}>Track your expenses smarter</p>
+        </div>
         <form onSubmit={handleSubmit} className={styles.form}>
           {error && <p className={styles.error}>{error}</p>}
           <label>
@@ -60,6 +65,7 @@ export function Login() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
+              placeholder="you@example.com"
             />
           </label>
           <label>
@@ -70,21 +76,26 @@ export function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
+              placeholder="••••••••"
             />
           </label>
-          <button type="submit" disabled={loading}>
-            {loading ? 'Logging in…' : 'Log in'}
+          <button type="submit" disabled={loading} className={styles.submitBtn}>
+            {loading ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
-        <div style={{ margin: '20px 0', textAlign: 'center' }}>
-          <p style={{ marginBottom: '10px', fontSize: '14px', color: 'var(--text-secondary)' }}>Or continue with</p>
+        
+        <div className={styles.divider}>
+          <span>Or continue with</span>
+        </div>
+        
+        <div className={styles.googleContainer}>
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={() => setError('Google login failed')}
           />
         </div>
         <p className={styles.footer}>
-          Don’t have an account? <Link to="/register">Register</Link>
+          Don't have an account? <Link to="/register">Create one</Link>
         </p>
       </div>
     </div>
