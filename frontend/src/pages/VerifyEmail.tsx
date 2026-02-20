@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { verifyEmail } from '../api/auth'
-import { useAuth } from '../contexts/AuthContext'
 import logo from '../assets/logo.png'
 import styles from './Auth.module.css'
 
@@ -9,7 +8,6 @@ export function VerifyEmail() {
   const [searchParams] = useSearchParams()
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [error, setError] = useState('')
-  const { setUser } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
