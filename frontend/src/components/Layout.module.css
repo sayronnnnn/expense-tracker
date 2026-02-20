@@ -305,6 +305,10 @@
   color: var(--primary);
 }
 
+.menuToggle {
+  display: none;
+}
+
 .themeToggle {
   display: flex;
   align-items: center;
