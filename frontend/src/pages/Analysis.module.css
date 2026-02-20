@@ -1,0 +1,445 @@
+.container {
+  padding: var(--space-6);
+  max-width: 1400px;
+  margin: 0 auto;
+  background: var(--bg-primary);
+}
+
+/* Page Header */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-8);
+  gap: var(--space-6);
+}
+
+.titleSection {
+  flex: 1;
+}
+
+.pageTitle {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2) 0;
+  letter-spacing: -0.5px;
+}
+
+.pageSubtitle {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--bg-elevated);
+  padding: var(--space-4) var(--space-5);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.controlBtn {
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.controlBtn:hover {
+  background: rgba(167, 139, 250, 0.1);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.monthLabel {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  min-width: 140px;
+  text-align: center;
+}
+
+/* Metrics Grid */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.metricCard {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: var(--space-5);
+  transition: all 0.2s ease;
+}
+
+.metricCard:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.15);
+}
+
+.metricLabel {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-2);
+}
+
+.metricValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: var(--space-2);
+}
+
+.metricSubtext {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Summary Card */
+.summaryCard {
+  background: var(--bg-elevated);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  padding: var(--space-6);
+  margin-bottom: var(--space-8);
+  box-shadow: 0 2px 8px rgba(167, 139, 250, 0.15);
+}
+
+.summaryCard h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.summaryText {
+  font-size: 1.025rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* Summary Section */
+.summarySection {
+  background: linear-gradient(135deg, rgba(167, 139, 250, 0.1) 0%, rgba(167, 139, 250, 0.05) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: var(--space-6);
+  margin-bottom: var(--space-8);
+  border-left: 4px solid var(--primary);
+}
+
+.summaryContent h2 {
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.summaryText {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Section Grid */
+.sectionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+@media (max-width: 1024px) {
+  .sectionGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Section Card */
+.sectionCard {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: var(--space-6);
+  transition: all 0.2s ease;
+}
+
+.sectionCard:hover {
+  border-color: var(--primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.sectionIcon {
+  color: var(--primary);
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.sectionHeader h2 {
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Profile Badge */
+.profileTypeContainer {
+  margin-bottom: var(--space-5);
+}
+
+.profileBadge {
+  display: inline-block;
+  background: rgba(167, 139, 250, 0.15);
+  color: var(--primary);
+  padding: var(--space-2) var(--space-4);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profileInsight {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-5);
+  font-size: 0.95rem;
+}
+
+/* Category Breakdown */
+.categoryBreakdown h3 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4) 0;
+  font-weight: 600;
+}
+
+.categoryItems {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.categoryItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.categoryBar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.categoryBarLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.categoryName {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.categoryPercent {
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.barBackground {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), rgba(167, 139, 250, 0.7));
+  transition: width 0.3s ease;
+}
+
+.categoryAmount {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Spending Spikes */
+.spikesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.spikeItem {
+  padding: var(--space-4);
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.spikeItem:hover {
+  border-color: var(--primary);
+  background: rgba(167, 139, 250, 0.05);
+}
+
+.spikeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-3);
+}
+
+.spikeHeader h4 {
+  margin: 0 0 var(--space-1) 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.spikeDate {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.spikeAmount {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #e74c3c;
+}
+
+.spikeStats {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.statItem {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.statItem.increase {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+/* Trends */
+.trendsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.trendItem {
+  padding: var(--space-4);
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: all 0.2s ease;
+}
+
+.trendItem:hover {
+  border-color: var(--primary);
+  background: rgba(167, 139, 250, 0.05);
+}
+
+.trendInfo h4 {
+  margin: 0 0 var(--space-2) 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.trendInsight {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.trendDirection {
+  flex-shrink: 0;
+}
+
+.directionBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.directionBadge.increasing {
+  background: rgba(108, 179, 73, 0.15);
+  color: #6cb349;
+}
+
+.directionBadge.decreasing {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+}
+
+/* Empty State */
+.emptyState {
+  padding: var(--space-4);
+  color: var(--text-secondary);
+  text-align: center;
+  font-style: italic;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pageHeader {
+    flex-direction: column;
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sectionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pageTitle {
+    font-size: 1.75rem;
+  }
+
+  .controls {
+    width: 100%;
+  }
+}

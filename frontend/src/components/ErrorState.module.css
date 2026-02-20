@@ -1,0 +1,31 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12) var(--space-6);
+  gap: var(--space-4);
+}
+
+.message {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--danger);
+  text-align: center;
+}
+
+.retry {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--primary);
+  background: var(--primary-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.retry:hover {
+  background: var(--bg-body);
+  border-color: var(--primary);
+}

@@ -1,0 +1,27 @@
+# FastAPI & server
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+
+# MongoDB (Beanie ODM)
+beanie==1.26.0
+pymongo==4.10.1
+
+# Auth & validation
+python-jose[cryptography]==3.3.0
+bcrypt>=4.0.1,<5
+pydantic[email]==2.10.2
+pydantic-settings==2.6.1
+email-validator==2.2.0
+
+# Export
+reportlab==4.2.5
+
+# Background jobs
+apscheduler==3.10.4
+
+# LLM integration
+openai>=1.0.0
+groq==0.11.0 
+
+# Utils
+python-multipart==0.0.17
