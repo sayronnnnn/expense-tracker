@@ -14,7 +14,7 @@ const googleClientId = '615291196872-hp4m90oghjamp6ogp8624ippebnpcggj.apps.googl
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <GoogleOAuthProvider clientId={googleClientId} onScriptFailure={() => console.error('Failed to load Google OAuth script')}>
+    <GoogleOAuthProvider clientId={googleClientId}>
       <App />
     </GoogleOAuthProvider>
   </StrictMode>,
