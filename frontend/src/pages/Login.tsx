@@ -41,10 +41,17 @@ export function Login() {
       setUser(user)
       navigate(from, { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Google login failed')
+      const errorMessage = err instanceof Error ? err.message : 'Google login failed'
+      console.error('Google login error:', err)
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleGoogleError = () => {
+    console.error('Google login button error - try again')
+    setError('Google sign-in is initializing. Please try again in a moment.')
   }
 
   return (
@@ -91,7 +98,7 @@ export function Login() {
         <div className={styles.googleContainer}>
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
-            onError={() => setError('Google login failed')}
+            onError={handleGoogleError}
           />
         </div>
         <p className={styles.footer}>
