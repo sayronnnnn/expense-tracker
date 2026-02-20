@@ -35,7 +35,6 @@ export function Login() {
     setError('')
     setLoading(true)
     try {
-      const response = JSON.parse(atob(credentialResponse.credential.split('.')[1]))
       await googleLogin(credentialResponse.credential)
       const user = await getMe()
       setUser(user)
