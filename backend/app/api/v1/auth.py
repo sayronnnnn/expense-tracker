@@ -118,13 +118,13 @@ async def google_auth(body: GoogleAuthBody):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Google OAuth not configured")
     
     try:
-        # Verify the Google token
+        # Verify the Google token (ID token from GoogleLogin component)
+        # The credential from GoogleLogin is a JWT ID token
         idinfo = id_token.verify_oauth2_token(body.token, google_requests.Request(), google_client_id)
         
         # Token is valid, extract user info
         email = idinfo.get("email")
         name = idinfo.get("name")
-        picture = idinfo.get("picture")
         
         if not email:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email not provided by Google")
