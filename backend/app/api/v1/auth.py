@@ -130,7 +130,20 @@ async def resend_verification(body: LoginBody, background_tasks: BackgroundTasks
 @router.post("/login", response_model=TokenResponse)
 async def login(body: LoginBody):
     user = await User.find_one(User.email == body.email)
-    if not user or not verify_password(body.password, user.password_hash):
+    
+    # Check if user exists
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+    
+    # Check if user has a password (not OAuth-only)
+    if not user.password_hash:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, 
+            detail="This account uses Google OAuth. Please login with Google."
+        )
+    
+    # Verify password
+    if not verify_password(body.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
     
     # Check if email is verified
@@ -212,7 +225,7 @@ async def google_auth(body: GoogleAuthBody):
             user = User(
                 email=email,
                 name=name,
-                password_hash="",  # No password for OAuth users
+                password_hash=None,  # No password for OAuth users
                 email_verified=True,  # Google verifies emails
             )
             await user.insert()

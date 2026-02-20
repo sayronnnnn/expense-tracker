@@ -8,7 +8,7 @@ from app.utils import utc_now
 
 class User(Document):
     email: Indexed(str, unique=True)
-    password_hash: str
+    password_hash: str | None = None  # None for OAuth users without manual password
     name: str | None = None
     email_verified: bool = False
     verification_token: str | None = None

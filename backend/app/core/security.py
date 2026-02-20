@@ -23,9 +23,16 @@ def hash_password(plain: str) -> str:
     return hashed.decode("ascii")
 
 
-def verify_password(plain: str, hashed: str) -> bool:
+def verify_password(plain: str, hashed: str | None) -> bool:
+    # Return False if hash is None or empty (e.g., OAuth users without passwords)
+    if not hashed:
+        return False
     pw = _password_bytes(plain)
-    return bcrypt.checkpw(pw, hashed.encode("ascii"))
+    try:
+        return bcrypt.checkpw(pw, hashed.encode("ascii"))
+    except (ValueError, TypeError):
+        # Invalid salt or corrupted hash
+        return False
 
 
 def create_access_token(sub: str, email: str) -> str:
