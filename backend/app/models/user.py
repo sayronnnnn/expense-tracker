@@ -10,6 +10,8 @@ class User(Document):
     email: Indexed(str, unique=True)
     password_hash: str
     name: str | None = None
+    email_verified: bool = False
+    verification_token: str | None = None
     created_at: datetime = Field(default_factory=utc_now)
     updated_at: datetime = Field(default_factory=utc_now)
 

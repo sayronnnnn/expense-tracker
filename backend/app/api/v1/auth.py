@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
+import secrets
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 
@@ -7,14 +8,28 @@ from beanie import PydanticObjectId
 
 from app.models import User
 from app.core.security import (
+    hash_password,
+    verify_password,
     create_access_token,
     create_refresh_token,
     decode_token,
 )
 from app.api.deps import get_current_user
 from app.config import settings
+from app.utils.email import send_verification_email
 
 router = APIRouter()
+
+
+class RegisterBody(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=8, description="At least 8 characters")
+    name: str | None = None
+
+
+class LoginBody(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=1)
 
 
 class TokenResponse(BaseModel):
@@ -23,8 +38,109 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class VerificationResponse(BaseModel):
+    message: str
+    email: str
+
+
 class RefreshBody(BaseModel):
     refresh_token: str
+
+
+@router.post("/register", response_model=VerificationResponse)
+async def register(body: RegisterBody):
+    existing = await User.find_one(User.email == body.email)
+    if existing:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
+    
+    # Generate verification token
+    verification_token = secrets.token_urlsafe(32)
+    
+    user = User(
+        email=body.email,
+        password_hash=hash_password(body.password),
+        name=body.name,
+        email_verified=False,
+        verification_token=verification_token,
+    )
+    await user.insert()
+    
+    # Send verification email
+    await send_verification_email(body.email, verification_token)
+    
+    return VerificationResponse(
+        message="Registration successful! Please check your email to verify your account.",
+        email=body.email,
+    )
+
+
+class VerifyEmailBody(BaseModel):
+    token: str
+
+
+@router.post("/verify-email", response_model=TokenResponse)
+async def verify_email(body: VerifyEmailBody):
+    """Verify email with token from email link"""
+    user = await User.find_one(User.verification_token == body.token)
+    
+    if not user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired verification token")
+    
+    # Mark email as verified and clear token
+    user.email_verified = True
+    user.verification_token = None
+    await user.save()
+    
+    # Return tokens to auto-login
+    return TokenResponse(
+        access_token=create_access_token(str(user.id), user.email),
+        refresh_token=create_refresh_token(str(user.id), user.email),
+    )
+
+
+@router.post("/resend-verification", response_model=VerificationResponse)
+async def resend_verification(body: LoginBody):
+    """Resend verification email"""
+    user = await User.find_one(User.email == body.email)
+    
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    if user.email_verified:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already verified")
+    
+    # Verify password
+    if not verify_password(body.password, user.password_hash):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password")
+    
+    # Generate new verification token
+    verification_token = secrets.token_urlsafe(32)
+    user.verification_token = verification_token
+    await user.save()
+    
+    # Send verification email
+    await send_verification_email(user.email, verification_token)
+    
+    return VerificationResponse(
+        message="Verification email sent! Please check your email.",
+        email=user.email,
+    )
+
+
+@router.post("/login", response_model=TokenResponse)
+async def login(body: LoginBody):
+    user = await User.find_one(User.email == body.email)
+    if not user or not verify_password(body.password, user.password_hash):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+    
+    # Check if email is verified
+    if not user.email_verified:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email not verified. Please check your email to verify your account.")
+    
+    return TokenResponse(
+        access_token=create_access_token(str(user.id), user.email),
+        refresh_token=create_refresh_token(str(user.id), user.email),
+    )
 
 
 @router.post("/refresh", response_model=TokenResponse)

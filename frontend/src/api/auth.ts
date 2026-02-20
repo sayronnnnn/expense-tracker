@@ -1,6 +1,31 @@
 import type { User, TokenResponse } from '../types'
 import { apiGet, apiPost, setTokens, clearTokens } from './client'
 
+export interface VerificationResponse {
+  message: string
+  email: string
+}
+
+export async function register(email: string, password: string, name?: string): Promise<VerificationResponse> {
+  return apiPost<VerificationResponse>('/auth/register', { email, password, name })
+}
+
+export async function verifyEmail(token: string): Promise<TokenResponse> {
+  const data = await apiPost<TokenResponse>('/auth/verify-email', { token })
+  setTokens(data.access_token, data.refresh_token)
+  return data
+}
+
+export async function resendVerification(email: string, password: string): Promise<VerificationResponse> {
+  return apiPost<VerificationResponse>('/auth/resend-verification', { email, password })
+}
+
+export async function login(email: string, password: string): Promise<TokenResponse> {
+  const data = await apiPost<TokenResponse>('/auth/login', { email, password })
+  setTokens(data.access_token, data.refresh_token)
+  return data
+}
+
 export async function googleLogin(googleToken: string): Promise<TokenResponse> {
   const data = await apiPost<TokenResponse>('/auth/google', { token: googleToken })
   setTokens(data.access_token, data.refresh_token)
