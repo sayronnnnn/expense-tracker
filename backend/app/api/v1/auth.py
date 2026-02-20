@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, EmailStr, Field
-import requests
+from pydantic import BaseModel, EmailStr
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
 
@@ -8,8 +7,6 @@ from beanie import PydanticObjectId
 
 from app.models import User
 from app.core.security import (
-    hash_password,
-    verify_password,
     create_access_token,
     create_refresh_token,
     decode_token,
@@ -20,17 +17,6 @@ from app.config import settings
 router = APIRouter()
 
 
-class RegisterBody(BaseModel):
-    email: EmailStr
-    password: str = Field(min_length=8, description="At least 8 characters")
-    name: str | None = None
-
-
-class LoginBody(BaseModel):
-    email: EmailStr
-    password: str = Field(min_length=1)
-
-
 class TokenResponse(BaseModel):
     access_token: str
     refresh_token: str
@@ -39,34 +25,6 @@ class TokenResponse(BaseModel):
 
 class RefreshBody(BaseModel):
     refresh_token: str
-
-
-@router.post("/register", response_model=TokenResponse)
-async def register(body: RegisterBody):
-    existing = await User.find_one(User.email == body.email)
-    if existing:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
-    user = User(
-        email=body.email,
-        password_hash=hash_password(body.password),
-        name=body.name,
-    )
-    await user.insert()
-    return TokenResponse(
-        access_token=create_access_token(str(user.id), user.email),
-        refresh_token=create_refresh_token(str(user.id), user.email),
-    )
-
-
-@router.post("/login", response_model=TokenResponse)
-async def login(body: LoginBody):
-    user = await User.find_one(User.email == body.email)
-    if not user or not verify_password(body.password, user.password_hash):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
-    return TokenResponse(
-        access_token=create_access_token(str(user.id), user.email),
-        refresh_token=create_refresh_token(str(user.id), user.email),
-    )
 
 
 @router.post("/refresh", response_model=TokenResponse)
